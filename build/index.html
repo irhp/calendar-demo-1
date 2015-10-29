@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="ngBoilerplate" ng-controller="AppCtrl">
+  <head>
+    <title ng-bind="pageTitle"></title>
+
+	<!-- TOUCH EMULATOR -->
+
+    <!-- social media tags -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@joshdmiller">
+    <meta name="twitter:title" content="ngBoilerplate">
+    <meta name="twitter:description" content="Non-Trivial AngularJS Made Easy: Everything you need to kickstart AngularJS projects: a best-practice directory structure, an intelligent build system, and the best web design libraries around.">
+    <meta name="twitter:creator" content="@joshdmiller">
+    <meta name="twitter:image:src" content="https://a248.e.akamai.net/assets.github.com/images/modules/logos_page/Octocat.png?1366128846">
+    <meta property="og:title" content="ngBoilerplate" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://bit.ly/ngBoilerplate" />
+    <meta property="og:image" content="https://a248.e.akamai.net/assets.github.com/images/modules/logos_page/Octocat.png?1366128846" />
+    <meta property="og:description" content="Non-Trivial AngularJS Made Easy: Everything you need to kickstart AngularJS projects: a best-practice directory structure, an intelligent build system, and the best web design libraries around.">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- font awesome from BootstrapCDN -->
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+    <!-- compiled CSS -->
+    <link rel="stylesheet" type="text/css" href="vendor/scheduler/scheduler.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/fullcalendar/dist/fullcalendar.css" />
+    <link rel="stylesheet" type="text/css" href="assets/ngbp-0.3.2.css" />
+
+    <!-- compiled JavaScript -->
+    <script type="text/javascript" src="vendor/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="vendor/angular/angular.js"></script>
+    <script type="text/javascript" src="vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script type="text/javascript" src="vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js"></script>
+    <script type="text/javascript" src="vendor/angular-ui-router/release/angular-ui-router.js"></script>
+    <script type="text/javascript" src="vendor/angular-ui-calendar/src/calendar.js"></script>
+    <script type="text/javascript" src="vendor/moment/moment.js"></script>
+    <script type="text/javascript" src="vendor/fullcalendar/dist/fullcalendar.js"></script>
+    <script type="text/javascript" src="vendor/scheduler/scheduler.js"></script>
+    <script type="text/javascript" src="vendor/hammer/hammer.js"></script>
+    <script type="text/javascript" src="src/app/about/about.js"></script>
+    <script type="text/javascript" src="src/app/app.js"></script>
+    <script type="text/javascript" src="src/app/demo1/demo1.js"></script>
+    <script type="text/javascript" src="src/app/demo1/gestures.js"></script>
+    <script type="text/javascript" src="src/app/home/home.js"></script>
+    <script type="text/javascript" src="src/common/plusOne/plusOne.js"></script>
+    <script type="text/javascript" src="templates-common.js"></script>
+    <script type="text/javascript" src="templates-app.js"></script>
+
+    <!-- it's stupid to have to load it here, but this is for the +1 button -->
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js">
+      { "parsetags": "explicit" }
+    </script>
+	<script>
+		angular.module('ngBoilerplate')
+		.controller('testC', function($scope) {
+
+				$scope.test = 11;
+
+				$scope.uiConfig = {
+					calendar: {
+						defaultView: 'timelineWeek'
+					}
+				};
+
+				var eventArray =  [
+					{
+						id: 'id1',
+						title: 'The event',
+						start: '2015-10-25T09:00:00',
+						end: '2015-10-25T12:00:00',
+						resourceId: 'A1'
+					}
+				];
+			
+				$scope.eventSources = [ eventArray ];
+
+		});
+	</script>
+  </head>
+  <body ng-controller="testC">
+	<div ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="theCalendar">
+  </body>
+</html>
