@@ -272,12 +272,58 @@ angular.module("about/about.tpl.html", []).run(["$templateCache", function($temp
 
 angular.module("demo1/demo1.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("demo1/demo1.tpl.html",
-    "<div class=\"panel panel-default\">\n" +
-    "	Testing\n" +
-    "	<div id=\"myElement\">Test element</div>\n" +
-    "<div id='calendar'></div>\n" +
-    "	<div ui-calendar=\"uiConfig.calendar\" ng-model=\"eventSources\" calendar=\"theCalendar\">\n" +
-    "	T\n" +
+    "<div class=\"container\">\n" +
+    "	<div class=\"row\">\n" +
+    "		<div class=\"col-xs-4\">\n" +
+    "		\n" +
+    "			<div class=\"panel panel-default\">\n" +
+    "				<div class=\"panel-heading\">\n" +
+    "					Number of resources\n" +
+    "				</div>\n" +
+    "				<div class=\"panel-body text-center\">\n" +
+    "					<form class=\"form-horizontal\">\n" +
+    "						<button class=\"btn btn-default\" ng-click=\"removeResource()\"> &lt </button>\n" +
+    "						<span> {{resourceArray.length}} </span>\n" +
+    "						<button class=\"btn btn-default\" ng-click=\"addResource()\"> &gt </button>\n" +
+    "					</form>\n" +
+    "				</div>\n" +
+    "			</div>\n" +
+    "\n" +
+    "			<div class=\"panel panel-default\">\n" +
+    "				<div class=\"panel-heading\">\n" +
+    "					Number of days\n" +
+    "				</div>\n" +
+    "				<div class=\"panel-body text-center\">\n" +
+    "					<form class=\"form-horizontal\">\n" +
+    "						<button class=\"btn btn-default\" ng-click=\"removeDay()\"> &lt </button>\n" +
+    "						<span> {{uiConfig.calendar.views.timelineCustom.duration.days}} </span>\n" +
+    "						<button class=\"btn btn-default\" ng-click=\"addDay()\"> &gt </button>\n" +
+    "					</form>\n" +
+    "				</div>\n" +
+    "			</div>\n" +
+    "\n" +
+    "			<div ng-show=\"selectedEvent !== undefined\" class=\"panel panel-default\">\n" +
+    "				<div class=\"panel-heading\">\n" +
+    "					Event ID \n" +
+    "				</div>\n" +
+    "				<div class=\"panel-body text-center\">\n" +
+    "					<form>\n" +
+    "						<div class=\"form-group\">\n" +
+    "							<input class=\"form-control\" ng-model=\"editorTitle\">\n" +
+    "						</div>\n" +
+    "						<div class=\"form-group\">\n" +
+    "							<button class=\"btn btn-default\" ng-click=\"commitChange()\">Commit</button>\n" +
+    "							<button class=\"btn btn-default\" ng-click=\"deleteEvent()\">Delete event</button>\n" +
+    "						</div>\n" +
+    "					</form>\n" +
+    "				</div>\n" +
+    "			</div>\n" +
+    "\n" +
+    "		</div>\n" +
+    "		<div class=\"col-xs-8\">\n" +
+    "			<div id='theCalendar' ui-calendar=\"uiConfig.calendar\" ng-model=\"eventSources\" calendar='theCalendar'>\n" +
+    "		</div>\n" +
+    "	</div>\n" +
     "</div>\n" +
     "");
 }]);

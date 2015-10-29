@@ -75,8 +75,8 @@ module.exports = {
 	  'vendor/hammer/hammer.js'
     ],
     css: [
-	  'vendor/scheduler/scheduler.css',
-      'vendor/fullcalendar/dist/fullcalendar.css'
+      'vendor/fullcalendar/dist/fullcalendar.css',
+	  'vendor/scheduler/scheduler.css'
     ],
     assets: [
     ]

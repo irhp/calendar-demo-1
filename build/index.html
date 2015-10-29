@@ -4,6 +4,8 @@
     <title ng-bind="pageTitle"></title>
 
 	<!-- TOUCH EMULATOR -->
+	<script src=" ../vendor/TouchEmulator/touch-emulator.js"></script>
+	<script>TouchEmulator()</script>
 
     <!-- social media tags -->
     <meta name="twitter:card" content="summary">
@@ -24,8 +26,8 @@
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
     <!-- compiled CSS -->
-    <link rel="stylesheet" type="text/css" href="vendor/scheduler/scheduler.css" />
     <link rel="stylesheet" type="text/css" href="vendor/fullcalendar/dist/fullcalendar.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/scheduler/scheduler.css" />
     <link rel="stylesheet" type="text/css" href="assets/ngbp-0.3.2.css" />
 
     <!-- compiled JavaScript -->
@@ -52,34 +54,97 @@
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js">
       { "parsetags": "explicit" }
     </script>
-	<script>
-		angular.module('ngBoilerplate')
-		.controller('testC', function($scope) {
-
-				$scope.test = 11;
-
-				$scope.uiConfig = {
-					calendar: {
-						defaultView: 'timelineWeek'
-					}
-				};
-
-				var eventArray =  [
-					{
-						id: 'id1',
-						title: 'The event',
-						start: '2015-10-25T09:00:00',
-						end: '2015-10-25T12:00:00',
-						resourceId: 'A1'
-					}
-				];
-			
-				$scope.eventSources = [ eventArray ];
-
-		});
-	</script>
   </head>
-  <body ng-controller="testC">
-	<div ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="theCalendar">
+  <body>
+    <div class="container">
+      <div class="navbar navbar-default">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" ng-init="menuCollapsed = true"
+            ng-click="menuCollapsed = ! menuCollapsed">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="navbar-brand">
+            ngbp
+            <small>
+              <a href="http://github.com/ngbp/ngbp/blob/v0.3.2-release/CHANGELOG.md">
+                v0.3.2
+              </a>
+            </small>
+          </div>
+        </div>
+        <div class="collapse navbar-collapse" collapse="menuCollapsed">
+          <ul class="nav navbar-nav">
+            <li ui-sref-active="active">
+              <a href ui-sref="home">
+                <i class="fa fa-home"></i>
+                Home
+              </a>
+            </li>
+            <li ui-sref-active="active">
+              <a href ui-sref="about">
+                <i class="fa fa-info-circle"></i>
+                What is it?
+              </a>
+            </li>
+            <li ui-sref-active="active">
+              <a href ui-sref="demo1">
+                <i class="fa fa-info-circle"></i>
+                Demo
+              </a>
+			</li>
+            <li>
+              <a href="https://github.com/ngbp/ngbp#readme">
+                <i class="fa fa-book"></i>
+                Read the Docs
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/ngbp/ngbp">
+                <i class="fa fa-github-alt"></i>
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/ngbp/ngbp/issues">
+                <i class="fa fa-comments"></i>
+                Support
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" ui-view="main"></div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-inner">
+          <ul class="social">
+            <li><a target="_blank" href="http://gplus.to/joshdmiller"><i class="fa fa-google-plus-sign"></i></a></li>
+            <li><a target="_blank" href="http://twitter.com/joshdmiller"><i class="fa fa-twitter-sign"></i></a></li>
+            <li><a target="_blank" href="http://linkedin.com/in/joshdmiller"><i class="fa fa-linkedin-sign"></i></a></li>
+            <li><a target="_blank" href="http://github.com/ngbp/ngbp"><i class="fa fa-github-sign"></i></a></li>
+          </ul>
+          
+
+          <p>
+            (c) 2013 <a href="http://www.joshdavidmiller.com">Josh David Miller</a>. 
+            <a href="http://github.com/ngbp/ngbp/fork_select">Fork this</a>
+            to kickstart your next project.
+            <br />
+            ngbp is based on
+            <a href="http://www.angularjs.org">AngularJS</a>,
+            <a href="http://getbootstrap.com">Bootstrap</a>, 
+            <a href="http://angular-ui.github.com/bootstrap">UI Bootstrap</a>,
+            and 
+            <a href="http://fortawesome.github.com/Font-Awesome">Font Awesome</a>.        
+          </p>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
