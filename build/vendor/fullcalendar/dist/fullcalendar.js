@@ -6012,7 +6012,7 @@ DayGrid.mixin({
 				'<div class="fc-clear"/>' +
 			'</div>' +
 			'<div class="fc-body ' + view.widgetContentClass + '">' +
-				'<div class="fc-event-container"></div>' +
+				'<div class="fc-event-container">1</div>' +
 			'</div>'
 		);
 		var segContainer = content.find('.fc-event-container');

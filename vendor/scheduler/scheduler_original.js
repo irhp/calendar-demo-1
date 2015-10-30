@@ -1,6 +1,6 @@
 
 /*!
-FullCalendar Scheduler v1.0.2
+FullCalendar Scheduler v1.0.1
 Docs & License: http://fullcalendar.io/scheduler/
 (c) 2015 Adam Shaw
  */
@@ -1957,27 +1957,6 @@ TimelineGrid = (function(superClass) {
     return normalDate;
   };
 
-  TimelineGrid.prototype.normalizeGridRange = function(range) {
-    var adjustedEnd, normalRange;
-    if (this.isTimeScale) {
-      normalRange = {
-        start: this.normalizeGridDate(range.start),
-        end: this.normalizeGridDate(range.end)
-      };
-    } else {
-      normalRange = this.view.computeDayRange(range);
-      if (this.largeUnit) {
-        normalRange.start.startOf(this.largeUnit);
-        adjustedEnd = normalRange.end.clone().startOf(this.largeUnit);
-        if (!adjustedEnd.isSame(normalRange.end) || !adjustedEnd.isAfter(normalRange.start)) {
-          adjustedEnd.add(this.slotDuration);
-        }
-        normalRange.end = adjustedEnd;
-      }
-    }
-    return normalRange;
-  };
-
   TimelineGrid.prototype.rangeUpdated = function() {
     var date, slotDates;
     this.start = this.normalizeGridDate(this.start);
@@ -2059,7 +2038,13 @@ TimelineGrid = (function(superClass) {
 
   TimelineGrid.prototype.rangeToSegs = function(range) {
     var normalRange, seg;
-    normalRange = this.normalizeGridRange(range);
+    normalRange = {
+      start: this.normalizeGridDate(range.start),
+      end: this.normalizeGridDate(range.end)
+    };
+    if (!normalRange.end.isAfter(normalRange.start)) {
+      normalRange.end = normalRange.start.clone().add(this.slotDuration);
+    }
     seg = intersectionToSeg(normalRange, this);
     if (seg) {
       if (seg.isStart && !this.isValidDate(seg.start)) {
@@ -3004,7 +2989,7 @@ TimelineGrid.prototype.computeHeaderFormats = function() {
       if (weekNumbersVisible) {
         format1 = this.opt('weekFormat');
       }
-      format2 = 'dd D';
+      format2 = this.opt('smallDayDateFormat');
       break;
     case 'hour':
       if (weekNumbersVisible) {
@@ -5086,7 +5071,7 @@ ResourceRow = (function(superClass) {
 
 FC.views.timeline.resourceClass = ResourceTimelineView;
 
-RELEASE_DATE = '2015-10-18';
+RELEASE_DATE = '2015-10-13';
 
 UPGRADE_WINDOW = {
   years: 1,

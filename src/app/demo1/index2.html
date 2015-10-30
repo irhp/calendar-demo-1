@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html ng-app="widthApp">
+	<head>
+		<script src='touch-emulator.js'></script> 
+		<script> TouchEmulator(); </script>
+		<link href="bootstrap.css" rel="stylesheet" />
+		<link href="bootstrap-theme.css" rel="stylesheet" />
+		<link href='fullcalendar.css' rel='stylesheet' />
+		<link href='scheduler.css' rel='stylesheet' />
+		<script src='../columns/moment.min.js'></script>
+		<script src='../columns/jquery.min.js'></script>
+		<script src='fullcalendar.js'></script>
+		<script src='scheduler.js'></script>
+		<script src='angular.min.js'></script>
+		<script src='calendar.js'></script>
+		<script src='hammer.js'></script> 
+		<style>
+			#testDiv {
+				background-color: lightblue;
+				width: 100px;
+				height: 50px;
+			}
+
+			#overlayDiv {
+				background-color: lightpink;
+				width: 100px;
+				height: 25px;
+				display: none;
+				position: relative;
+				top: -37px;
+			}
+		</style>
+		<script>
+			var setText = function() {
+				$('#testDiv').html($('#testDiv').css('width'));
+			};
+
+			$(document).ready(function() {
+				var el = document.getElementById('testDiv');
+				var h = new Hammer(el);
+				var prevScale = 1;
+				h.on('pinchstart', function(ev) {
+					prevScale = ev.scale;
+					$('#overlayDiv').css('display','block');
+
+					setText();
+				});
+				h.on('pinchmove', function(ev) {
+					//console.log( $(el).css('width', '150px') );
+					var currentWidth = $(el).css('width');
+					currentWidth = currentWidth.match(/[0-9]*/)[0]; //extract numerical part from ###px
+					var scale = ev.scale - prevScale;
+					prevScale = ev.scale;
+					var newWidth = Math.floor(100 * (scale) + --currentWidth);
+					//Round down width to make it a multiple of 50
+					var displayWidth = Math.round(newWidth / 50.0) * 50;
+					//Constrain the width within some reasonable bounds
+					newWidth = newWidth < 50 ? 50 : newWidth;
+					newWidth = newWidth > 250 ? 250 : newWidth;
+						console.log(scale * 100);
+					$(el).css('width', newWidth);
+
+					//Set width of overlay div to nearest multiple of 50
+					var overlayWidth = newWidth;
+					overlayWidth = Math.ceil(currentWidth / 50.0) * 50;
+					$('#overlayDiv').css('width', overlayWidth);
+
+					setText();
+				});
+				h.on('pinchend', function(ev) {
+					//Round up to nearest multiple of 50
+					var currentWidth = $(el).css('width');
+					currentWidth = currentWidth.match(/[0-9]*/)[0]; //extract numerical part from ###px
+					currentWidth = Math.ceil(currentWidth / 50.0) * 50;
+					$(el).css('width', currentWidth);
+					$('#overlayDiv').css('display','none');
+
+					setText();
+				});
+
+				h.get('pinch').set({enable:true});
+
+				setText();
+			});
+
+			angular.module("widthApp", [])
+			.controller('widthCtrl', function($scope) {
+
+			});
+		</script>
+	</head>
+	<body>
+		<div ng-controller="widthCtrl" class="container" id="main">
+			<p>1</p>
+			<p>1</p>
+			<p>1</p>
+			<div id="testDiv"></div>
+			<div id="overlayDiv"></div>
+		</div>
+	</body>
+</html>

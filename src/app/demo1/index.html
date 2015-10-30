@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html ng-app="calendarApp">
 	<head>
+		<script src='touch-emulator.js'></script> 
+		<script> TouchEmulator(); </script>
 		<link href="bootstrap.css" rel="stylesheet" />
 		<link href="bootstrap-theme.css" rel="stylesheet" />
 		<link href='fullcalendar.css' rel='stylesheet' />
@@ -11,17 +13,145 @@
 		<script src='scheduler.js'></script>
 		<script src='angular.min.js'></script>
 		<script src='calendar.js'></script>
+		<script src='hammer.js'></script> 
 		<script>
+			var actionId = null;
+
+			eventArray =  [
+				{
+					id: 'id1',
+					divId: 'id1',
+					title: 'The event',
+					start: '2015-10-30T10:00:00',
+					end: '2015-10-30T12:00:00',
+					resourceId: 'A1'
+				},
+				{
+					id: 'id2',
+					divId: 'id2',
+					title: 'The event',
+					start: '2015-10-30T10:00:00',
+					end: '2015-10-30T12:00:00',
+					resourceId: 'A2'
+				}
+			];
+
+			function toggleEventAction(id,ev) {
+				//Respond to an event being interacted with
+				//in some way:
+
+				$.each(eventArray, function(index,event) {
+					if(ev.scale) {
+						if(event.id === id) {
+							eventArray[index].end = moment(event.end).add(1,'hour');
+							actionId = id;
+						}
+					}
+				});
+
+			};
+
+
 			var app = angular.module('calendarApp', ['ui.calendar']);
 			app.controller('calendarCtrl', function($scope, uiCalendarConfig) {
+
+
+
+				var calendar = document.getElementById('theCalendar');
+				var h = new Hammer(calendar);
+				var origScale = 1;
+				var origSize = 0;
+				var currentSize = 0;
+
+				var skipUnwantedElements = function(q) {
+					var cl = q.attr('class');
+					if (cl !== 'fc-title' && cl !== 'fc-content') {
+						return false;
+					}
+					return true;
+				};
+
+				h.on('pinchstart', function(ev) {
+					if(!skipUnwantedElements($(ev.target))) {
+						return;
+					}
+					currentSize = $(ev.target).css('width');
+					console.log(currentSize);
+					currentSize = Number(currentSize.match(/[0-9]*/)[0]);
+					origSize = currentSize;
+					var el = $(ev.target);
+					var rect = ev.target.getBoundingClientRect();
+					var left = rect.left;
+					var top = rect.top;
+					var length = rect.width;
+					$('#overlayDiv').css('display', 'block');
+					$('#overlayDiv').css('left', left);
+					$('#overlayDiv').css('top', top);
+					$('#overlayDiv').css('width', length);
+					origScale = ev.scale;
+				});
+				h.on('pinchmove', function(ev) {
+					if(!skipUnwantedElements($(ev.target))) {
+						return;
+					}
+					var scale = origScale - ev.scale;
+					scale = -scale;
+					origScale = ev.scale;
+					var size = currentSize + 100 * scale;
+					currentSize = size;
+					$('#overlayDiv').css('width', currentSize);
+				});
+				h.on('pinchend', function(ev) {
+					if(!skipUnwantedElements($(ev.target))) {
+						return;
+					}
+					//Remove the overlay <div>
+					$('#overlayDiv').css('left', -100); //barbaric, but works for now
+					$('#overlayDiv').css('display', 'none');
+					//Compute how much we increased the width
+					var increase = currentSize / origSize;
+					//Go up the hierarchy toward the <a> element which will contain the
+					//calendar event's id
+					var el = $(ev.target);
+					while(!el.is('a')) {
+						el = el.parent();
+					}
+					var id = el.attr('id');
+					//We will now find this event in the source array
+					var found = null;
+					for(var i = 0; i < eventArray.length; ++i) {
+						var candidate = eventArray[i];
+						if(candidate.id === id) {
+							found = candidate;
+							break;
+						}
+					}
+					if(found) {
+						//Get a proportion of minutes per pixels so we know how to adjust the width
+						var minutes = moment.duration(moment(found.end).diff(moment(found.start))).asMinutes();
+						var mpp = (1.0 * minutes / currentSize);
+						var newDuration = minutes * increase;
+						//Round down to half-hours:
+						newDuration = Math.floor(newDuration / 30.0) * 30;
+						//Compute the new ending time and update the calendar event
+						 console.log(newDuration);
+						var newEnd = moment(found.start).add(newDuration, 'm');
+						found.end = newEnd;
+						refresh();
+					}
+				});
+				h.get('pinch').set({enable:true});
+
+
+
+
+
+				$scope.action = function() {
+
+				};
+
 				var refresh = function() {
-					//Change the view back and forth to force an update
-					var viewName = uiCalendarConfig.calendars.theCalendar.fullCalendar('getView').name;
-					uiCalendarConfig.calendars.theCalendar.fullCalendar('changeView',
-						'month');
-					uiCalendarConfig.calendars.theCalendar.fullCalendar('changeView',
-						viewName);
-					$scope.selectedEvent = undefined;
+					$scope.$apply();
 				}
 
 				var updateEvent = function(source, value) {
@@ -36,7 +166,6 @@
 						}
 					}
 
-					console.log(eventArray);
 				};
 
 				$scope.selectedEvent = undefined;
@@ -57,16 +186,6 @@
 					}
 					$scope.selectedEvent = undefined;
 				};
-
-				eventArray =  [
-					{
-						id: 'id1',
-						title: 'The event',
-						start: '2015-10-18T10:00:00',
-						end: '2015-10-18T12:00:00',
-						resourceId: 'A1'
-					}
-				];
 
 				resourceArray = [
 					{
@@ -90,8 +209,10 @@
 						editable: true,
 						resources: resourceArray,
 						dayClick: function(date, jsEvent, view, resource) {
+							var eventId = ('kuter' + nextId++);
 							var newEvent = {
-								id: ('kuter' + nextId++),
+								id: eventId,
+								divId: (function() { return eventId; })(),
 								title: 'New event',
 								start: date.format(),
 								end: date.add(3,'hour').format(),
@@ -152,9 +273,18 @@
 				};
 			});
 		</script>
+		<style>
+			#overlayDiv {
+				background-color: lightblue;
+				position: absolute;
+				top: 15px;
+				left: 15px;
+				z-index: 333;
+			}
+		</style>
 	</head>
-	<body ng-controller="calendarCtrl">
-		<div class="container">
+	<body>
+		<div id="mainPanel" class="container" ng-controller="calendarCtrl" >
 			<div class="row">
 				<div class="col-xs-4">
 				
@@ -203,9 +333,11 @@
 
 				</div>
 				<div class="col-xs-8">
-					<div ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar='theCalendar'>
+					<div id='theCalendar' ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar='theCalendar'>
 				</div>
 			</div>
 		</div>
+
+		<div id="overlayDiv">Overlay</div>
 	</body>
 </html>

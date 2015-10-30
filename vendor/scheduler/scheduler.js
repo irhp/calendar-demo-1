@@ -2562,7 +2562,12 @@ TimelineGrid = (function(superClass) {
     classes = this.getSegClasses(seg, isDraggable, isResizableFromStart || isResizableFromEnd);
     classes.unshift('fc-timeline-event', 'fc-h-event');
     timeText = this.getEventTimeText(event);
-    return '<a class="' + classes.join(' ') + '" style="' + cssToStr(this.getEventSkinCss(event)) + '"' + (event.url ? ' href="' + htmlEscape(event.url) + '"' : '') + '>' + '<div class="fc-content">' + (timeText ? '<span class="fc-time">' + htmlEscape(timeText) + '</span>' : '') + '<span class="fc-title">' + (event.title ? htmlEscape(event.title) : '&nbsp;') + '</span>' + '</div>' + '<div class="fc-bg" />' + (isResizableFromStart ? '<div class="fc-resizer fc-start-resizer"></div>' : '') + (isResizableFromEnd ? '<div class="fc-resizer fc-end-resizer"></div>' : '') + '</a>';
+
+	/* CHANGE: Here we insert the 'divId' property of the event as an id of the
+	 * generated <div> element
+	 */
+	var divId = seg.event.divId;
+    return '<a ' + (divId ? 'id="' + divId + '" ' : '') + 'class="' + classes.join(' ') + '" style="' + cssToStr(this.getEventSkinCss(event)) + '"' + (event.url ? ' href="' + htmlEscape(event.url) + '"' : '') + '>' + '<div ' +  'class="fc-content">' + (timeText ? '<span class="fc-time">' + htmlEscape(timeText) + '</span>' : '') + '<span ' +  'class="fc-title">' + (event.title ? htmlEscape(event.title) : '&nbsp;') + '</span>' + '</div>' + '<div class="fc-bg" />' + (isResizableFromStart ? '<div class="fc-resizer fc-start-resizer"></div>' : '') + (isResizableFromEnd ? '<div class="fc-resizer fc-end-resizer"></div>' : '') + '</a>';
   };
 
   TimelineGrid.prototype.updateSegFollowers = function(segs) {
