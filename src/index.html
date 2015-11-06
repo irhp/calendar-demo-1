@@ -3,10 +3,6 @@
   <head>
     <title ng-bind="pageTitle"></title>
 
-	<!-- TOUCH EMULATOR -->
-	<script src=" ../vendor/TouchEmulator/touch-emulator.js"></script>
-	<script>TouchEmulator()</script>
-
     <!-- social media tags -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@joshdmiller">
@@ -25,11 +21,31 @@
     <!-- font awesome from BootstrapCDN -->
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
-    <!-- compiled CSS --><% styles.forEach( function ( file ) { %>
-    <link rel="stylesheet" type="text/css" href="<%= file %>" /><% }); %>
+    <!-- compiled CSS -->
+    <link rel="stylesheet" type="text/css" href="vendor/fullcalendar/dist/fullcalendar.css" />
+    <link rel="stylesheet" type="text/css" href="vendor/scheduler/scheduler.css" />
+    <link rel="stylesheet" type="text/css" href="assets/ngbp-0.3.2.css" />
 
-    <!-- compiled JavaScript --><% scripts.forEach( function ( file ) { %>
-    <script type="text/javascript" src="<%= file %>"></script><% }); %>
+	<script src="touch-emulator.js"></script>
+	<script>TouchEmulator()</script>
+    <!-- compiled JavaScript -->
+    <script type="text/javascript" src="vendor/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="vendor/angular/angular.js"></script>
+    <script type="text/javascript" src="vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script type="text/javascript" src="vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js"></script>
+    <script type="text/javascript" src="vendor/angular-ui-router/release/angular-ui-router.js"></script>
+    <script type="text/javascript" src="vendor/angular-ui-calendar/src/calendar.js"></script>
+    <script type="text/javascript" src="vendor/moment/moment.js"></script>
+    <script type="text/javascript" src="vendor/fullcalendar/dist/fullcalendar.js"></script>
+    <script type="text/javascript" src="vendor/scheduler/scheduler.js"></script>
+    <script type="text/javascript" src="vendor/hammer/hammer.js"></script>
+    <script type="text/javascript" src="src/app/about/about.js"></script>
+    <script type="text/javascript" src="src/app/app.js"></script>
+    <script type="text/javascript" src="src/app/demo1/demo1.js"></script>
+    <script type="text/javascript" src="src/app/home/home.js"></script>
+    <script type="text/javascript" src="src/common/plusOne/plusOne.js"></script>
+    <script type="text/javascript" src="templates-common.js"></script>
+    <script type="text/javascript" src="templates-app.js"></script>
 
     <!-- it's stupid to have to load it here, but this is for the +1 button -->
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js">
@@ -50,8 +66,8 @@
           <div class="navbar-brand">
             ngbp
             <small>
-              <a href="http://github.com/ngbp/ngbp/blob/v<%= version %>-release/CHANGELOG.md">
-                v<%= version %>
+              <a href="http://github.com/ngbp/ngbp/blob/v0.3.2-release/CHANGELOG.md">
+                v0.3.2
               </a>
             </small>
           </div>

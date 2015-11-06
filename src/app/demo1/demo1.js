@@ -26,26 +26,29 @@ angular.module( 'ngBoilerplate.demo1', [
 		{
 			id: 'id1',
 			divId: 'id1',
-			title: 'Event 1',
-			start: '2015-10-30T10:00:00',
-			end: '2015-10-30T12:00:00',
+			title: 'The event',
+			start: '2015-11-07T10:00:00',
+			end: '2015-11-07T12:00:00',
 			resourceId: 'A1'
 		},
 		{
 			id: 'id2',
 			divId: 'id2',
-			title: 'Event 2',
-			start: '2015-10-30T10:00:00',
-			end: '2015-10-30T12:00:00',
+			title: 'The event',
+			start: '2015-11-07T06:00:00',
+			end: '2015-11-07T08:00:00',
 			resourceId: 'A2'
 		}
 	];
 
 		var calendar = document.getElementById('theCalendar');
-		var h = new Hammer(calendar);
+		var h = new Hammer.Manager(calendar,null);
+		h.add(new Hammer.Pinch());
+		h.add(new Hammer.Tap());
 		var origScale = 1;
 		var origSize = 0;
 		var currentSize = 0;
+		var pinchInProgress = false;
 
 		var skipUnwantedElements = function(q) {
 			var cl = q.attr('class');
@@ -55,16 +58,31 @@ angular.module( 'ngBoilerplate.demo1', [
 			return true;
 		};
 
+		var findElement = function(ev) {
+			//Go up the hierarchy toward the <a> element which will contain the
+			//calendar event's id
+			var el = $(ev.target);
+			while(!el.is('a')) {
+				el = el.parent();
+			}
+			return el;
+		};
+
 		h.on('pinchstart', function(ev) {
+			if(pinchInProgress) {
+				return;
+			}
 			if(!skipUnwantedElements($(ev.target))) {
 				return;
 			}
-			currentSize = $(ev.target).css('width');
+			origScale = 1;
+			pinchInProgress = true;
+			var el = findElement(ev);
+			currentSize = $(el).css('width');
 			currentSize = Number(currentSize.match(/[0-9]*/)[0]);
 			origSize = currentSize;
-			var el = $(ev.target);
-			var rect = ev.target.getBoundingClientRect();
-			var left = rect.left - window.scrollX;;
+			var rect = el.get(0).getBoundingClientRect();
+			var left = rect.left;
 			var top = rect.top + window.scrollY;
 			var length = rect.width;
 			$('#overlayDiv').css('display', 'block');
@@ -73,32 +91,36 @@ angular.module( 'ngBoilerplate.demo1', [
 			$('#overlayDiv').css('width', length);
 			origScale = ev.scale;
 		});
+
 		h.on('pinchmove', function(ev) {
+			if(!pinchInProgress) {
+				return;
+			}
 			if(!skipUnwantedElements($(ev.target))) {
 				return;
 			}
+			currentSize = $('#overlayDiv').css('width');
+			currentSize = Number(currentSize.match(/[0-9]*/)[0]);
 			var scale = origScale - ev.scale;
 			scale = -scale;
 			origScale = ev.scale;
 			var size = currentSize + 100 * scale;
 			currentSize = size;
-			$('#overlayDiv').css('width', currentSize);
+			$('#overlayDiv').css('width', size);
 		});
-		h.on('pinchend', function(ev) {
+		var endHandler = function(ev) {
+			if(!pinchInProgress) {
+				return;
+			}
 			if(!skipUnwantedElements($(ev.target))) {
 				return;
 			}
-			//Remove the overlay <div>
 			$('#overlayDiv').css('left', -100); //barbaric, but works for now
 			$('#overlayDiv').css('display', 'none');
 			//Compute how much we increased the width
 			var increase = currentSize / origSize;
-			//Go up the hierarchy toward the <a> element which will contain the
-			//calendar event's id
-			var el = $(ev.target);
-			while(!el.is('a')) {
-				el = el.parent();
-			}
+			var el = findElement(ev); //finds the <a> element corresponding to the
+			//calendar event in the DOM hierarchy
 			var id = el.attr('id');
 			//We will now find this event in the source array
 			var found = null;
@@ -121,8 +143,12 @@ angular.module( 'ngBoilerplate.demo1', [
 				found.end = newEnd;
 				refresh();
 			}
-		});
-		h.get('pinch').set({enable:true});
+
+			pinchInProgress = false;
+		};
+
+		h.on('pinchend', endHandler);
+		h.on('pinchcancel', endHandler);
 
 		var refresh = function() {
 			$scope.$apply();
@@ -180,7 +206,7 @@ angular.module( 'ngBoilerplate.demo1', [
 		$scope.uiConfig = {
 			calendar: {
 				defaultView: 'timelineCustom',
-				editable: true,
+				editable: false,
 				resources: resourceArray,
 				dayClick: function(date, jsEvent, view, resource) {
 					var eventId = ('kuter' + nextId++);
